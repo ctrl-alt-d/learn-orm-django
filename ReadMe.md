@@ -120,5 +120,40 @@ menjadora.flags.set([nocaduca,voluminos])
 nocaduca.producte_set.all() #comprovem, aquest cop, des del flag cap al producte
 ```
 
+### Consultes bàsiques
+
+* Tots els productes: `Producte.objects.all()`
+* Tots els productes que continguin la lletra "o": `Producte.objects.filter(nom__icontains="o")`
+* Totes les subcategories modificades fa més de 1 minut:
+
+```
+from datetime import datetime, timedelta
+from productes.models import SubCategoria
+from django.utils.timezone import get_current_timezone
+
+# en modifico una ara
+subcategoria_gos=SubCategoria.objects.get(nom="Gos")
+subcategoria_gos.darrera_modificacio
+subcategoria_gos.nom="Gos"
+subcategoria_gos.save()
+subcategoria_gos.darrera_modificacio # comprovem que ha canviat
+
+fa_un_minut = datetime.now(tz=get_current_timezone()) - timedelta(minutes=1)  # or Naive
+SubCategoria.objects.filter(darrera_modificacio__lte=fa_un_minut) # comprovem que no surt la subcategoria gos.
+```
+
+* Tots els productes de la categoria "Mascotes":
+
+```
+from productes.models import Producte
+Producte.objects.filter(sub_categoria__categoria__nom__iexact = "mascotes" )
+
+#naturalment també es pot fer:
+from productes.models import Categoria
+mascotes = Categoria.objects.get(nom__iexact="mascotes")
+Producte.objects.filter(sub_categoria__categoria = mascotes )
+```
+
+* Tots els productes amb el flag "Drogeria": `Producte.objects.filter( flags__nom="Drogueria")`
 
 
