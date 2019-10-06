@@ -10,6 +10,7 @@ class Categoria(models.Model):
 class SubCategoria(models.Model):
     nom = models.CharField(max_length=50)
     categoria = models.ForeignKey( Categoria, on_delete=models.CASCADE )
+    data_creacio = models.DateTimeField(auto_now_add=True)
     darrera_modificacio = models.DateTimeField(auto_now=True)
 
     def __str__(self):
