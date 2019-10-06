@@ -35,7 +35,7 @@ source ./venv/bin/activate
 python3 manage.py shell
 ```
 
-Insertem dades inicials de productes:
+#### Insertem dades inicials de productes:
 
 ```
 from productes.models import Categoria, SubCategoria, Producte
@@ -96,8 +96,29 @@ for t in (x,y1,y2,):
     t.delete()
 ```
 
+#### Insertem N:M
+
+Insertem diferents flags i els assignem als productes:
+
+```
+from productes.models import Flags
+drogeria = Flags.objects.create(nom="Drogueria")
+nocaduca = Flags.objects.create(nom="Llarga Caducitat")
+voluminos = Flags.objects.create(nom="Voluminós")
+
+#Cerquem productes:
+from productes.models import Producte
+sabo=Producte.objects.get(nom__iexact="sabó roba")
+menjadora=Producte.objects.filter(nom__startswith="Menjadora").first()
 
 
+#Assignem flags a productes
+sabo.flags.add(drogeria)
+sabo.flags.all() #comprovem
+
+menjadora.flags.set([nocaduca,voluminos])
+nocaduca.producte_set.all() #comprovem, aquest cop, des del flag cap al producte
+```
 
 
 
